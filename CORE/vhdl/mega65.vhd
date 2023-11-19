@@ -241,10 +241,10 @@ constant C_MENU_NAMCO_DSWA_7  : natural := 78;
 
 
 -- Galaga specific video processing
-signal div                    : std_logic_vector(2 downto 0);
-signal dim_video              : std_logic;
-signal dsw_a_i                : std_logic_vector(7 downto 0);
-signal dsw_b_i                : std_logic_vector(7 downto 0);
+signal div          : std_logic_vector(2 downto 0);
+signal dim_video    : std_logic;
+signal dsw_a_i      : std_logic_vector(7 downto 0);
+signal dsw_b_i      : std_logic_vector(7 downto 0);
 
 signal video_ce     : std_logic;
 signal video_red    : std_logic_vector(7 downto 0);
@@ -285,7 +285,7 @@ constant C_320_288_50 : video_modes_t := (
    ASPECT      => "01",       -- aspect ratio: 01=4:3, 10=16:9: "01" for SVGA
    PIXEL_REP   => '0',        -- no pixel repetition
    H_PIXELS    => 320,        -- horizontal display width in pixels
-   V_PIXELS    => 288,        -- vertical display width in rows
+   V_PIXELS    => 240,        -- vertical display width in rows
    H_PULSE     => 28,         -- horizontal sync pulse width in pixels
    H_BP        => 28,         -- horizontal back porch width in pixels
    H_FP        => 8,          -- horizontal front porch width in pixels
@@ -336,6 +336,7 @@ begin
    main_rst_o   <= main_rst;
    video_clk_o  <= video_clk;
    video_rst_o  <= video_rst;
+   video_ce_o   <= video_ce;
    
    dsw_a_i <= main_osm_control_i(C_MENU_MIDWAY_DSWA_7) &
               main_osm_control_i(C_MENU_MIDWAY_DSWA_6) &
@@ -394,7 +395,7 @@ begin
          
          -- Video output
          -- This is PAL 720x576 @ 50 Hz (pixel clock 27 MHz), but synchronized to main_clk (54 MHz).
-         video_ce_o           => open,
+         video_ce_o           => video_ce,
          video_ce_ovl_o       => open,
          video_red_o          => main_video_red,
          video_green_o        => main_video_green,
@@ -441,13 +442,8 @@ begin
     process (video_clk) -- 48 MHz
     begin
         if rising_edge(video_clk) then
-            video_ce       <= '0';
             video_ce_ovl_o <= '0';
-
             div <= std_logic_vector(unsigned(div) + 1);
-            if div="000" then
-               video_ce <= '1'; -- 6 MHz
-            end if;
             if div(0) = '1' then
                video_ce_ovl_o <= '1'; -- 24 MHz
             end if;
@@ -462,8 +458,8 @@ begin
                 video_blue  <= main_video_blue  & main_video_blue  & main_video_blue & main_video_blue;
             end if;
 
-            video_hs     <= not main_video_hs;
-            video_vs     <= main_video_vs;
+            video_hs     <= main_video_hs;
+            video_vs     <= not main_video_vs;
             video_hblank <= main_video_hblank;
             video_vblank <= main_video_vblank;
             video_de     <= not (main_video_hblank or main_video_vblank);
@@ -535,7 +531,7 @@ begin
        port map (
           --inputs
           CLK_VIDEO      => video_clk,
-          CE_PIXEL       => video_ce,
+          CE_PIXEL       => video_ce_o,
           VGA_R          => video_red,
           VGA_G          => video_green,
           VGA_B          => video_blue,
@@ -565,8 +561,8 @@ begin
    i_frame_buffer : entity work.frame_buffer
       generic map (
          G_ADDR_WIDTH => 16,
-         G_H_LEFT     => 48,
-         G_H_RIGHT    => 224+48,
+         G_H_LEFT     => 40,
+         G_H_RIGHT    => 240+40,
          G_VIDEO_MODE => C_320_288_50
       )
       
@@ -652,48 +648,53 @@ begin
 
       case qnice_dev_id_i is
 
---rom1_cs  <= '1' when dn_addr(15 downto 14) = "00"     else '0'; -- 16k
---rom2_cs  <= '1' when dn_addr(15 downto 12) = "0100"   else '0'; -- 4k
---rom3_cs  <= '1' when dn_addr(15 downto 12) = "0101"   else '0'; -- 4k
---roms_cs  <= '1' when dn_addr(15 downto 13) = "011"    else '0'; -- 8k
---romb_cs  <= '1' when dn_addr(15 downto 13) = "100"    else '0'; -- 8k
---rom51_cs <= '1' when dn_addr(15 downto 10) = "101000" else '0'; -- 1k
---rom54_cs <= '1' when dn_addr(15 downto 10) = "101001" else '0'; -- 1k
+--romp_cs  <= '1' when dn_addr(15 downto 14) = "00"   else '0'; -main cpu
+--rom_cs   <= '1' when dn_addr(15 downto 12) = "1100" else '0'; - audio cpu
+--roms1_cs <= '1' when dn_addr(15 downto 13) = "010"  else '0'; - gfx 1
+--roms2_cs <= '1' when dn_addr(15 downto 13) = "011"  else '0'; - gfx 1
+--roms3_cs <= '1' when dn_addr(15 downto 13) = "100"  else '0'; - gfx 1
+--romb1_cs <= '1' when dn_addr(15 downto 12) = "1010" else '0'; - gfx 2
+--romb2_cs <= '1' when dn_addr(15 downto 12) = "1011" else '0'; - gfx 2
 
-         -- Galaga ROMSs
-         when C_DEV_GAL_CPU_ROM1 =>
+
+         when C_DEV_BNJ_CPU_ROM1 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "00" & qnice_dev_addr_i(13 downto 0);    -- rom1_cs
+              qnice_dn_addr <= "000" & qnice_dev_addr_i(12 downto 0);    
+              qnice_dn_data <= qnice_dev_data_i(7 downto 0);
+         
+         when C_DEV_BNJ_CPU_ROM2 =>
+              qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
+              qnice_dn_addr <= "001" & qnice_dev_addr_i(12 downto 0);  
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
 
-         when C_DEV_GAL_CPU_ROM2 =>
+         when C_DEV_BNJ_CPU_ROM3 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "0100" & qnice_dev_addr_i(11 downto 0);  -- rom2_cs
+              qnice_dn_addr <= "1100" & qnice_dev_addr_i(11 downto 0); 
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
 
-         when C_DEV_GAL_CPU_ROM3 =>
+         when C_DEV_BNJ_GFX1_1 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "0101" & qnice_dev_addr_i(11 downto 0);  -- rom3_cs
+              qnice_dn_addr <= "010" & qnice_dev_addr_i(12 downto 0);   
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
 
-         when C_DEV_GAL_GFX2 =>
+         when C_DEV_BNJ_GFX1_2 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "011" & qnice_dev_addr_i(12 downto 0);   -- roms_cs
+              qnice_dn_addr <= "011" & qnice_dev_addr_i(12 downto 0);
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
 
-         when C_DEV_GAL_GFX1 =>
+         when C_DEV_BNJ_GFX1_3 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "100" & qnice_dev_addr_i(12 downto 0);   -- romb_cs
+              qnice_dn_addr <= "100" & qnice_dev_addr_i(12 downto 0); 
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
 
-         when C_DEV_GAL_MCU1 =>
+         when C_DEV_BNJ_GFX2_1 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "101000" & qnice_dev_addr_i(9 downto 0); -- rom51_cs
+              qnice_dn_addr <= "1010" & qnice_dev_addr_i(11 downto 0); 
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
-
-         when C_DEV_GAL_MCU2 =>
+              
+         when C_DEV_BNJ_GFX2_2 =>
               qnice_dn_wr   <= qnice_dev_ce_i and qnice_dev_we_i;
-              qnice_dn_addr <= "101001" & qnice_dev_addr_i(9 downto 0); -- rom52_cs
+              qnice_dn_addr <= "1011" & qnice_dev_addr_i(11 downto 0); 
               qnice_dn_data <= qnice_dev_data_i(7 downto 0);
 
          when others => null;

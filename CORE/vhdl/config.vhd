@@ -76,7 +76,7 @@ type WHS_RECORD_ARRAY_TYPE is array (0 to WHS_RECORDS - 1) of WHS_RECORD_TYPE;
 
 constant SCR_WELCOME : string :=
 
-   "Galaga V0.5.1 (beta)\n" &
+   "Burnin'Rubber V0.5.0 (beta)\n" &
    "--------------------\n" &
    "\n" &
    "MiSTer port done by Muse in 2023\n\n" &
@@ -185,8 +185,8 @@ constant SEL_CFG_FILE      : std_logic_vector(15 downto 0) := x"0101";
 
 -- START YOUR CONFIGURATION BELOW THIS LINE
 
-constant DIR_START         : string := "/arcade/galaga";
-constant CFG_FILE          : string := "/arcade/galaga/glgcfg";
+constant DIR_START         : string := "/arcade/brubber";
+constant CFG_FILE          : string := "/arcade/brubber/bnjcfg";
 
 --------------------------------------------------------------------------------------------------------------------
 -- General configuration settings: Reset, Pause, OSD behavior, Ascal, etc. (Selector 0x0110)

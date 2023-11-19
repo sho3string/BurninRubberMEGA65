@@ -44,7 +44,7 @@ constant QNICE_FIRMWARE           : string  := QNICE_FIRMWARE_M2M;
 -- Galaga core's clock speed
 -- Actual clock is 18_432 Mhz ( see MAME driver - galaga.cpp ).
 -- MiSTer uses 18Mhz
-constant CORE_CLK_SPEED       : natural := 18_000_000;   -- Galaga's main clock is 18 MHz 
+constant CORE_CLK_SPEED       : natural := 12_000_000; -- Burnin'Rubber's main clock is 12 MHz 
 
 -- System clock speed (crystal that is driving the FPGA) and QNICE clock speed
 -- !!! Do not touch !!!
@@ -58,8 +58,8 @@ constant QNICE_CLK_SPEED      : natural := 50_000_000;   -- a change here has de
 -- Rendering constants (in pixels)
 --    VGA_*   size of the core's target output post scandoubler
 --    FONT_*  size of one OSM character
-constant VGA_DX               : natural := 576;
-constant VGA_DY               : natural := 448;
+constant VGA_DX               : natural := 512;
+constant VGA_DY               : natural := 480;
 constant FONT_FILE            : string  := "../font/Anikki-16x16-m2m.rom";
 constant FONT_DX              : natural := 16;
 constant FONT_DY              : natural := 16;
@@ -143,47 +143,51 @@ constant C_CRTROMS_MAN           : crtrom_buf_array := ( x"EEEE", x"EEEE",
 --               b) Don't forget to zero-terminate each of your substrings of C_CRTROMS_AUTO_NAMES by adding "& ENDSTR;"
 --               c) Don't forget to finish the C_CRTROMS_AUTO array with x"EEEE"
 
-constant C_DEV_GAL_CPU_ROM1           : std_logic_vector(15 downto 0) := x"0100";     -- GALAGA CPU1 ROM 
-constant C_DEV_GAL_CPU_ROM2           : std_logic_vector(15 downto 0) := x"0101";     -- GALAGA CPU2 ROM 
-constant C_DEV_GAL_CPU_ROM3           : std_logic_vector(15 downto 0) := x"0102";     -- GALAGA CPU3 ROM 
-constant C_DEV_GAL_GFX1               : std_logic_vector(15 downto 0) := x"0103";     -- GALAGA BG GFX
-constant C_DEV_GAL_GFX2               : std_logic_vector(15 downto 0) := x"0104";     -- GALAGA SPRITE GFX
-constant C_DEV_GAL_MCU1               : std_logic_vector(15 downto 0) := x"0105";     -- MCU1 - 51xx
-constant C_DEV_GAL_MCU2               : std_logic_vector(15 downto 0) := x"0106";     -- MCU2 - 54XX
+constant C_DEV_BNJ_CPU_ROM1           : std_logic_vector(15 downto 0) := x"0100";     -- CPU1 ROM 
+constant C_DEV_BNJ_CPU_ROM2           : std_logic_vector(15 downto 0) := x"0101";     -- CPU2 ROM 
+constant C_DEV_BNJ_CPU_ROM3           : std_logic_vector(15 downto 0) := x"0102";     -- CPU3 ROM 
+constant C_DEV_BNJ_GFX1_1             : std_logic_vector(15 downto 0) := x"0103";     -- GFX 1
+constant C_DEV_BNJ_GFX1_2             : std_logic_vector(15 downto 0) := x"0104";     -- GFX 1
+constant C_DEV_BNJ_GFX1_3             : std_logic_vector(15 downto 0) := x"0105";     -- GFX 1
+constant C_DEV_BNJ_GFX2_1             : std_logic_vector(15 downto 0) := x"0106";     -- GFX 2
+constant C_DEV_BNJ_GFX2_2             : std_logic_vector(15 downto 0) := x"0107";     -- GFX 2
 
 -- GALAGA core specific ROMs
-constant ROM1_MAIN_CPU_ROM            : string  := "arcade/galaga/rom1.rom" & ENDSTR; -- z80 cpu 1
-constant ROM2_SUB_CPU_ROM             : string  := "arcade/galaga/rom2.rom" & ENDSTR; -- z80 sub cpu
-constant ROM3_SND_CPU_ROM             : string  := "arcade/galaga/rom3.rom" & ENDSTR; -- z80 snd cpu
-constant GFX1_BG_ROM                  : string  := "arcade/galaga/gfx1.rom" & ENDSTR; -- bg layer shapes
-constant GFX2_FG_ROM                  : string  := "arcade/galaga/gfx2.rom" & ENDSTR; -- sprite shapes
-constant NAMCO51XX_MCU_ROM            : string  := "arcade/galaga/51xx.bin" & ENDSTR; -- 51xx mcu
-constant NAMCO54XX_MCU_ROM            : string  := "arcade/galaga/54xx.bin" & ENDSTR; -- 54xx mcu
+constant ROM1_MAIN_CPU_ROM     : string  := "arcade/brubber/brubber.12c" & ENDSTR; -- main cpu rom 1
+constant ROM2_MAIN_CPU_ROM     : string  := "arcade/brubber/brubber.12d" & ENDSTR; -- main cpu rom 2
+constant ROM1_SND_CPU_ROM      : string  := "arcade/brubber/bnj4e.bin" & ENDSTR;   -- audio cpu
+constant GFX1_1_ROM            : string  := "arcade/brubber/bnj4f.bin" & ENDSTR;   -- gfx 1
+constant GFX1_2_ROM            : string  := "arcade/brubber/bnj4h.bin" & ENDSTR;   -- gfx 1
+constant GFX1_3_ROM            : string  := "arcade/brubber/bnj10e.bin" & ENDSTR;  -- gfx 1
+constant GFX2_1_ROM            : string  := "arcade/brubber/bnj10f.bin" & ENDSTR;  -- gfx 2
+constant GFX2_2_ROM            : string  := "arcade/brubber/bnj6c.bin" & ENDSTR;   -- gfx 2
 
-constant CPU_ROM1_MAIN_START          : std_logic_vector(15 downto 0) := X"0000";
-constant CPU_ROM2_MAIN_START          : std_logic_vector(15 downto 0) := CPU_ROM1_MAIN_START + ROM1_MAIN_CPU_ROM'length;
-constant CPU_ROM3_MAIN_START          : std_logic_vector(15 downto 0) := CPU_ROM2_MAIN_START + ROM2_SUB_CPU_ROM'length;
-constant GFX1_MAIN_START              : std_logic_vector(15 downto 0) := CPU_ROM3_MAIN_START + ROM3_SND_CPU_ROM'length;
-constant GFX2_MAIN_START              : std_logic_vector(15 downto 0) := GFX1_MAIN_START + GFX1_BG_ROM'length;
-constant MCU1_MAIN_START              : std_logic_vector(15 downto 0) := GFX2_MAIN_START + GFX2_FG_ROM'length;
-constant MCU2_MAIN_START              : std_logic_vector(15 downto 0) := MCU1_MAIN_START + NAMCO51XX_MCU_ROM'length;
+constant CPU1_ROM1_MAIN_START      : std_logic_vector(15 downto 0) := X"0000";
+constant CPU1_ROM2_MAIN_START      : std_logic_vector(15 downto 0) := CPU1_ROM1_MAIN_START + ROM1_MAIN_CPU_ROM'length;
+constant CPU2_ROM1_MAIN_START      : std_logic_vector(15 downto 0) := CPU1_ROM2_MAIN_START + ROM2_MAIN_CPU_ROM'length;
+constant GFX1_1_START              : std_logic_vector(15 downto 0) := CPU2_ROM1_MAIN_START + ROM1_SND_CPU_ROM'length;
+constant GFX1_2_START              : std_logic_vector(15 downto 0) := GFX1_1_START + GFX1_1_ROM'length;
+constant GFX1_3_START              : std_logic_vector(15 downto 0) := GFX1_2_START + GFX1_2_ROM'length;
+constant GFX2_1_START              : std_logic_vector(15 downto 0) := GFX1_3_START + GFX1_3_ROM'length;
+constant GFX2_2_START              : std_logic_vector(15 downto 0) := GFX2_1_START + GFX2_1_ROM'length;
 
 -- M2M framework constants
-constant C_CRTROMS_AUTO_NUM      : natural := 7;                                       -- Amount of automatically loadable ROMs and carts, if more tha    n 3: also adjust CRTROM_MAN_MAX in M2M/rom/shell_vars.asm, Needs to be in sync with config.vhd. Maximum is 16
-constant C_CRTROMS_AUTO_NAMES    : string  := ROM1_MAIN_CPU_ROM & ROM2_SUB_CPU_ROM &
-                                              ROM3_SND_CPU_ROM & GFX1_BG_ROM & GFX2_FG_ROM &
-                                              NAMCO51XX_MCU_ROM & NAMCO54XX_MCU_ROM &
+constant C_CRTROMS_AUTO_NUM      : natural := 8; -- Amount of automatically loadable ROMs and carts, if more than 3: also adjust CRTROM_MAN_MAX in M2M/rom/shell_vars.asm, Needs to be in sync with config.vhd. Maximum is 16
+constant C_CRTROMS_AUTO_NAMES    : string  := ROM1_MAIN_CPU_ROM & ROM2_MAIN_CPU_ROM & ROM1_SND_CPU_ROM &
+                                              GFX1_1_ROM & GFX1_2_ROM & GFX1_3_ROM &
+                                              GFX2_1_ROM & GFX2_2_ROM &
                                               ENDSTR;
+                                              
 constant C_CRTROMS_AUTO          : crtrom_buf_array := ( 
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_CPU_ROM1, C_CRTROMTYPE_MANDATORY, CPU_ROM1_MAIN_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_CPU_ROM2, C_CRTROMTYPE_MANDATORY, CPU_ROM2_MAIN_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_CPU_ROM3, C_CRTROMTYPE_MANDATORY, CPU_ROM3_MAIN_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_GFX1,     C_CRTROMTYPE_MANDATORY, GFX1_MAIN_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_GFX2,     C_CRTROMTYPE_MANDATORY, GFX2_MAIN_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_MCU1,     C_CRTROMTYPE_MANDATORY, MCU1_MAIN_START,
-      C_CRTROMTYPE_DEVICE, C_DEV_GAL_MCU2,     C_CRTROMTYPE_MANDATORY, MCU2_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_CPU_ROM1,C_CRTROMTYPE_MANDATORY, CPU1_ROM1_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_CPU_ROM2,C_CRTROMTYPE_MANDATORY, CPU1_ROM2_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_CPU_ROM3,C_CRTROMTYPE_MANDATORY, CPU2_ROM1_MAIN_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_GFX1_1,C_CRTROMTYPE_MANDATORY, GFX1_1_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_GFX1_2,C_CRTROMTYPE_MANDATORY, GFX1_2_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_GFX1_3,C_CRTROMTYPE_MANDATORY, GFX1_3_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_GFX2_1,C_CRTROMTYPE_MANDATORY, GFX2_1_START,
+      C_CRTROMTYPE_DEVICE, C_DEV_BNJ_GFX2_2,C_CRTROMTYPE_MANDATORY, GFX2_2_START,
                                                          x"EEEE");                     -- Always finish the array using x"EEEE"
-
 
 ----------------------------------------------------------------------------------------------------------
 -- Audio filters
