@@ -246,6 +246,10 @@ signal dim_video    : std_logic;
 signal dsw_a_i      : std_logic_vector(7 downto 0);
 signal dsw_b_i      : std_logic_vector(7 downto 0);
 
+signal old_clk          : std_logic;
+signal ce_vid           : std_logic;
+signal ce_pix           : std_logic;
+
 signal video_ce     : std_logic;
 signal video_red    : std_logic_vector(7 downto 0);
 signal video_green  : std_logic_vector(7 downto 0);
@@ -336,7 +340,7 @@ begin
    main_rst_o   <= main_rst;
    video_clk_o  <= video_clk;
    video_rst_o  <= video_rst;
-   video_ce_o   <= video_ce;
+   --video_ce_o   <= video_ce;
    
    dsw_a_i <= main_osm_control_i(C_MENU_MIDWAY_DSWA_7) &
               main_osm_control_i(C_MENU_MIDWAY_DSWA_6) &
@@ -395,7 +399,7 @@ begin
          
          -- Video output
          -- This is PAL 720x576 @ 50 Hz (pixel clock 27 MHz), but synchronized to main_clk (54 MHz).
-         video_ce_o           => video_ce,
+         video_ce_o           => ce_vid,--video_ce,
          video_ce_ovl_o       => open,
          video_red_o          => main_video_red,
          video_green_o        => main_video_green,
@@ -442,8 +446,16 @@ begin
     process (video_clk) -- 48 MHz
     begin
         if rising_edge(video_clk) then
+        
+            old_clk <= ce_vid;
+            ce_pix  <= old_clk and (not ce_vid);
+            
+            -- video_ce       <= '0';
             video_ce_ovl_o <= '0';
             div <= std_logic_vector(unsigned(div) + 1);
+            --if div="000" then
+            --   video_ce <= '1'; -- 6 MHz
+            --end if;
             if div(0) = '1' then
                video_ce_ovl_o <= '1'; -- 24 MHz
             end if;
@@ -476,7 +488,7 @@ begin
            video_hs_o       <= video_rot_hs;
            video_hblank_o   <= video_rot_hblank;
            video_vblank_o   <= video_rot_vblank;
-           video_ce_o       <= video_ce;
+           video_ce_o       <= ce_pix;
        else
            video_red_o      <= video_red;
            video_green_o    <= video_green;
@@ -485,7 +497,7 @@ begin
            video_hs_o       <= video_hs;
            video_hblank_o   <= video_hblank;
            video_vblank_o   <= video_vblank;
-           video_ce_o       <= video_ce;           
+           video_ce_o       <= ce_pix;           
        end if;
     end process;
 
@@ -531,7 +543,7 @@ begin
        port map (
           --inputs
           CLK_VIDEO      => video_clk,
-          CE_PIXEL       => video_ce_o,
+          CE_PIXEL       => ce_pix,
           VGA_R          => video_red,
           VGA_G          => video_green,
           VGA_B          => video_blue,
@@ -572,7 +584,7 @@ begin
          ddram_din_i      => ddram_data(31 downto 0),
          ddram_we_i       => ddram_we,
          video_clk_i      => video_clk,
-         video_ce_i       => video_ce,
+         video_ce_i       => ce_pix,
          video_red_o      => video_rot_red,
          video_green_o    => video_rot_green,
          video_blue_o     => video_rot_blue,
