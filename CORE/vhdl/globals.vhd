@@ -41,9 +41,8 @@ constant QNICE_FIRMWARE           : string  := QNICE_FIRMWARE_M2M;
 -- then add all the clocks speeds here by adding more constants.
 ----------------------------------------------------------------------------------------------------------
 
--- Galaga core's clock speed
--- Actual clock is 18_432 Mhz ( see MAME driver - galaga.cpp ).
--- MiSTer uses 18Mhz
+-- Burnin'Rubber core's clock speed
+-- Actual clock is 12 Mhz
 constant CORE_CLK_SPEED       : natural := 12_000_000; -- Burnin'Rubber's main clock is 12 MHz 
 
 -- System clock speed (crystal that is driving the FPGA) and QNICE clock speed
@@ -152,15 +151,15 @@ constant C_DEV_BNJ_GFX1_3             : std_logic_vector(15 downto 0) := x"0105"
 constant C_DEV_BNJ_GFX2_1             : std_logic_vector(15 downto 0) := x"0106";     -- GFX 2
 constant C_DEV_BNJ_GFX2_2             : std_logic_vector(15 downto 0) := x"0107";     -- GFX 2
 
--- GALAGA core specific ROMs
+-- Burnin'Rubber's core specific ROMs
 constant ROM1_MAIN_CPU_ROM     : string  := "arcade/brubber/brubber.12c" & ENDSTR; -- main cpu rom 1
 constant ROM2_MAIN_CPU_ROM     : string  := "arcade/brubber/brubber.12d" & ENDSTR; -- main cpu rom 2
-constant ROM1_SND_CPU_ROM      : string  := "arcade/brubber/bnj4e.bin" & ENDSTR;   -- audio cpu
-constant GFX1_1_ROM            : string  := "arcade/brubber/bnj4f.bin" & ENDSTR;   -- gfx 1
-constant GFX1_2_ROM            : string  := "arcade/brubber/bnj4h.bin" & ENDSTR;   -- gfx 1
-constant GFX1_3_ROM            : string  := "arcade/brubber/bnj10e.bin" & ENDSTR;  -- gfx 1
-constant GFX2_1_ROM            : string  := "arcade/brubber/bnj10f.bin" & ENDSTR;  -- gfx 2
-constant GFX2_2_ROM            : string  := "arcade/brubber/bnj6c.bin" & ENDSTR;   -- gfx 2
+constant ROM1_SND_CPU_ROM      : string  := "arcade/brubber/bnj6c.bin" & ENDSTR;   -- audio cpu
+constant GFX1_1_ROM            : string  := "arcade/brubber/bnj4e.bin" & ENDSTR;   -- gfx 1
+constant GFX1_2_ROM            : string  := "arcade/brubber/bnj4f.bin" & ENDSTR;   -- gfx 1
+constant GFX1_3_ROM            : string  := "arcade/brubber/bnj4h.bin" & ENDSTR;   -- gfx 1
+constant GFX2_1_ROM            : string  := "arcade/brubber/bnj10e.bin" & ENDSTR;  -- gfx 2
+constant GFX2_2_ROM            : string  := "arcade/brubber/bnj10f.bin" & ENDSTR;  -- gfx 2
 
 constant CPU1_ROM1_MAIN_START      : std_logic_vector(15 downto 0) := X"0000";
 constant CPU1_ROM2_MAIN_START      : std_logic_vector(15 downto 0) := CPU1_ROM1_MAIN_START + ROM1_MAIN_CPU_ROM'length;

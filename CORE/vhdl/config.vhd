@@ -267,8 +267,8 @@ constant SEL_CORENAME      : std_logic_vector(15 downto 0) := x"0200";
 -- START YOUR CONFIGURATION BELOW THIS LINE
 
 -- Currently this is only used in the debug console. Use the welcome screen and the
--- help system to display the name and version of the Galaga core to the end user
-constant CORENAME          : string := "Galaga V1";
+-- help system to display the name and version of the Burnin'Rubber core to the end user
+constant CORENAME          : string := "Burnin'Rubber V1";
 
 --------------------------------------------------------------------------------------------------------------------
 -- "Help" menu / Options menu  (Selectors 0x0300 .. 0x0312): DO NOT TOUCH
@@ -331,7 +331,7 @@ constant OPTM_DX           : natural := 23;
 constant OPTM_DY           : natural := 23;
 
 constant OPTM_ITEMS        : string :=
-   " Galaga\n"              &
+   " Burnin'Rubber\n"       &
    "\n"                     &
    " Pause when OSD open\n" &
    " Dim Video after 10s\n" &

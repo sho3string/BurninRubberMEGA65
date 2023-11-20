@@ -136,10 +136,14 @@ constant m65_help          : integer := 67; --Help key
 
 begin
    
+    -- audio left
     audio_left_o(15) <= not audio(10);
     audio_left_o(14 downto 0) <= signed(audio(9 downto 0) & "00000");
+    -- audio right
     audio_right_o(15) <= not audio(10);
     audio_right_o(14 downto 0) <= signed(audio(9 downto 0) & "00000");
+    
+  
    
     options(0) <= osm_control_i(C_MENU_OSMPAUSE);
     options(1) <= osm_control_i(C_MENU_OSMDIM);
@@ -176,14 +180,14 @@ begin
     coin1      => not keyboard_n(m65_5),
     coin2      => not keyboard_n(m65_6),
    
-    fire1      => not joy_1_fire_n_i or not keyboard_n(m65_up_crsr),
+    fire1      => not joy_1_fire_n_i or not keyboard_n(m65_space),
     up1        => not joy_1_up_n_i or not keyboard_n(m65_up_crsr),
     down1      => not joy_1_down_n_i or not keyboard_n(m65_vert_crsr),
     left1      => not joy_1_left_n_i or not keyboard_n(m65_left_crsr),
     right1     => not joy_1_right_n_i or not keyboard_n(m65_horz_crsr),
    
     -- player 2 joystick is only active in cocktail/table mode.
-    fire2      => not joy_1_fire_n_i or not keyboard_n(m65_up_crsr),
+    fire2      => not joy_1_fire_n_i or not keyboard_n(m65_space),
     up2        => not joy_1_up_n_i or not keyboard_n(m65_up_crsr),
     down2      => not joy_1_down_n_i or not keyboard_n(m65_vert_crsr),
     left2      => not joy_1_left_n_i or not keyboard_n(m65_left_crsr),

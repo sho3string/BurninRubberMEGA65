@@ -24,8 +24,8 @@ port (
    RESET_M2M_N             : in  std_logic;              -- Debounced system reset in system clock domain
 
    -- Share clock and reset with the framework
-   main_clk_o              : out std_logic;              -- Galaga's 18 MHz main clock
-   main_rst_o              : out std_logic;              -- Galaga's reset, synchronized
+   main_clk_o              : out std_logic;              -- Burnin'Rubber's 12 MHz main clock
+   main_rst_o              : out std_logic;              -- Burnin'Rubber's reset, synchronized
    
    video_clk_o             : out std_logic;              -- video clock 48 MHz
    video_rst_o             : out std_logic;              -- video reset, synchronized
@@ -165,7 +165,7 @@ signal video_rst           : std_logic;
 -- main_clk (MiSTer core's clock)
 ---------------------------------------------------------------------------------------------
 
--- Unprocessed video output from the Galaga core
+-- Unprocessed video output from the Burnin'Rubber core
 signal main_video_red      : std_logic_vector(2 downto 0);   
 signal main_video_green    : std_logic_vector(2 downto 0);
 signal main_video_blue     : std_logic_vector(1 downto 0);
@@ -240,7 +240,7 @@ constant C_MENU_NAMCO_DSWA_6  : natural := 77;
 constant C_MENU_NAMCO_DSWA_7  : natural := 78;
 
 
--- Galaga specific video processing
+-- Burnin'Rubber specific video processing
 signal div          : std_logic_vector(2 downto 0);
 signal dim_video    : std_logic;
 signal dsw_a_i      : std_logic_vector(7 downto 0);
@@ -277,7 +277,7 @@ signal ddram_data       : std_logic_vector(63 downto 0);
 signal ddram_be         : std_logic_vector( 7 downto 0);
 signal ddram_we         : std_logic;
 
--- ROM devices for Galaga
+-- ROM devices for Burnin'Rubber
 signal qnice_dn_addr    : std_logic_vector(15 downto 0);
 signal qnice_dn_data    : std_logic_vector(7 downto 0);
 signal qnice_dn_wr      : std_logic;
@@ -315,8 +315,8 @@ begin
          sys_clk_i         => CLK,             -- expects 100 MHz
          sys_rstn_i        => RESET_M2M_N,     -- Asynchronous, asserted low
          
-         main_clk_o        => main_clk,        -- Galaga's 18 MHz main clock
-         main_rst_o        => main_rst,        -- Galaga's reset, synchronized
+         main_clk_o        => main_clk,        -- Burnin'Rubber's 12 MHz main clock
+         main_rst_o        => main_rst,        -- Burnin'Rubber's reset, synchronized
          
          video_clk_o       => video_clk,       -- video clock 48 MHz
          video_rst_o       => video_rst        -- video reset, synchronized
@@ -432,7 +432,6 @@ begin
             old_clk <= ce_vid;
             ce_pix  <= old_clk and (not ce_vid);
             
-            -- video_ce       <= '0';
             video_ce_ovl_o <= '0';
             div <= std_logic_vector(unsigned(div) + 1);
             if div(0) = '1' then
@@ -639,7 +638,8 @@ begin
 
       case qnice_dev_id_i is
 
---romp_cs  <= '1' when dn_addr(15 downto 14) = "00"   else '0'; -main cpu
+
+--romp_cs  <= '1' when dn_addr(15 downto 14) = "00"   else '0'; - main cpu
 --rom_cs   <= '1' when dn_addr(15 downto 12) = "1100" else '0'; - audio cpu
 --roms1_cs <= '1' when dn_addr(15 downto 13) = "010"  else '0'; - gfx 1
 --roms2_cs <= '1' when dn_addr(15 downto 13) = "011"  else '0'; - gfx 1
