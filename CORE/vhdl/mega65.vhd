@@ -340,7 +340,6 @@ begin
    main_rst_o   <= main_rst;
    video_clk_o  <= video_clk;
    video_rst_o  <= video_rst;
-   --video_ce_o   <= video_ce;
    
    dsw_a_i <= main_osm_control_i(C_MENU_MIDWAY_DSWA_7) &
               main_osm_control_i(C_MENU_MIDWAY_DSWA_6) &
@@ -349,16 +348,7 @@ begin
               main_osm_control_i(C_MENU_MIDWAY_DSWA_3) &
               main_osm_control_i(C_MENU_MIDWAY_DSWA_2) &
               main_osm_control_i(C_MENU_MIDWAY_DSWA_1) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_0)  when main_osm_control_i(C_MENU_MIDWAY) = '1' else
-                    
-              main_osm_control_i(C_MENU_NAMCO_DSWA_7) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_6) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_5) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_4) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_3) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_2) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_1) &
-              main_osm_control_i(C_MENU_NAMCO_DSWA_0);       
+              main_osm_control_i(C_MENU_MIDWAY_DSWA_0);
    
   dsw_b_i <=  main_osm_control_i(C_MENU_MIDWAY_DSWB_7) &
               main_osm_control_i(C_MENU_MIDWAY_DSWB_6) &
@@ -367,16 +357,7 @@ begin
               main_osm_control_i(C_MENU_MIDWAY_DSWB_3) &
               main_osm_control_i(C_MENU_MIDWAY_DSWB_2) &
               main_osm_control_i(C_MENU_MIDWAY_DSWB_1) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_0)  when main_osm_control_i(C_MENU_MIDWAY) = '1' else
-                    
-              main_osm_control_i(C_MENU_NAMCO_DSWB_7) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_6) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_5) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_4) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_3) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_2) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_1) &
-              main_osm_control_i(C_MENU_NAMCO_DSWB_0);   
+              main_osm_control_i(C_MENU_MIDWAY_DSWB_0);
    
             
    ---------------------------------------------------------------------------------------------
@@ -399,7 +380,8 @@ begin
          
          -- Video output
          -- This is PAL 720x576 @ 50 Hz (pixel clock 27 MHz), but synchronized to main_clk (54 MHz).
-         video_ce_o           => ce_vid,--video_ce,
+         video_clk_o          => video_clk_o,
+         video_ce_o           => ce_vid,
          video_ce_ovl_o       => open,
          video_red_o          => main_video_red,
          video_green_o        => main_video_green,
@@ -453,9 +435,6 @@ begin
             -- video_ce       <= '0';
             video_ce_ovl_o <= '0';
             div <= std_logic_vector(unsigned(div) + 1);
-            --if div="000" then
-            --   video_ce <= '1'; -- 6 MHz
-            --end if;
             if div(0) = '1' then
                video_ce_ovl_o <= '1'; -- 24 MHz
             end if;
@@ -470,7 +449,7 @@ begin
                 video_blue  <= main_video_blue  & main_video_blue  & main_video_blue & main_video_blue;
             end if;
 
-            video_hs     <= main_video_hs;
+            video_hs     <= not main_video_hs;
             video_vs     <= not main_video_vs;
             video_hblank <= main_video_hblank;
             video_vblank <= main_video_vblank;
@@ -497,7 +476,7 @@ begin
            video_hs_o       <= video_hs;
            video_hblank_o   <= video_hblank;
            video_vblank_o   <= video_vblank;
-           video_ce_o       <= ce_pix;           
+           video_ce_o       <= ce_pix;
        end if;
     end process;
 

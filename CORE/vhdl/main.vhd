@@ -29,6 +29,7 @@ entity main is
       clk_main_speed_i        : in  natural;
 
       -- Video output
+      video_clk_o             : out std_logic;
       video_ce_o              : out std_logic;
       video_ce_ovl_o          : out std_logic;
       video_red_o             : out std_logic_vector(2 downto 0);
