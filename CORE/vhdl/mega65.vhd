@@ -193,51 +193,28 @@ constant C_MENU_VGA_STD       : natural := 23;
 constant C_MENU_VGA_15KHZHSVS : natural := 27;
 constant C_MENU_VGA_15KHZCS   : natural := 28;
 
-constant C_MENU_MIDWAY        : natural := 34;
-constant C_MENU_NAMCO         : natural := 35;
+constant C_MENU_DECO          : natural := 34;
 
--- Midway DIPs
--- Dipswitch B
-constant C_MENU_MIDWAY_DSWB_0 : natural := 40;
-constant C_MENU_MIDWAY_DSWB_1 : natural := 41;
-constant C_MENU_MIDWAY_DSWB_2 : natural := 42;
-constant C_MENU_MIDWAY_DSWB_3 : natural := 43;
-constant C_MENU_MIDWAY_DSWB_4 : natural := 44;
-constant C_MENU_MIDWAY_DSWB_5 : natural := 45;
-constant C_MENU_MIDWAY_DSWB_6 : natural := 46;
-constant C_MENU_MIDWAY_DSWB_7 : natural := 47;
-
+-- DECO DIPs
 -- Dipswitch A
-constant C_MENU_MIDWAY_DSWA_0 : natural := 49;
-constant C_MENU_MIDWAY_DSWA_1 : natural := 50;
-constant C_MENU_MIDWAY_DSWA_2 : natural := 51;
-constant C_MENU_MIDWAY_DSWA_3 : natural := 52;
-constant C_MENU_MIDWAY_DSWA_4 : natural := 53;
-constant C_MENU_MIDWAY_DSWA_5 : natural := 54;
-constant C_MENU_MIDWAY_DSWA_6 : natural := 55;
-constant C_MENU_MIDWAY_DSWA_7 : natural := 56;
+constant C_MENU_DECO_DSWA_0 : natural := 37;
+constant C_MENU_DECO_DSWA_1 : natural := 38;
+constant C_MENU_DECO_DSWA_2 : natural := 39;
+constant C_MENU_DECO_DSWA_3 : natural := 40;
+constant C_MENU_DECO_DSWA_4 : natural := 41;
+constant C_MENU_DECO_DSWA_5 : natural := 42;
+constant C_MENU_DECO_DSWA_6 : natural := 43;
+constant C_MENU_DECO_DSWA_7 : natural := 44;
 
-
--- Namco DIPs
 -- Dipswitch B
-constant C_MENU_NAMCO_DSWB_0  : natural := 62;
-constant C_MENU_NAMCO_DSWB_1  : natural := 63;
-constant C_MENU_NAMCO_DSWB_2  : natural := 64;
-constant C_MENU_NAMCO_DSWB_3  : natural := 65;
-constant C_MENU_NAMCO_DSWB_4  : natural := 66;
-constant C_MENU_NAMCO_DSWB_5  : natural := 67;
-constant C_MENU_NAMCO_DSWB_6  : natural := 68;
-constant C_MENU_NAMCO_DSWB_7  : natural := 69;
-
--- Dipswitch A
-constant C_MENU_NAMCO_DSWA_0  : natural := 71;
-constant C_MENU_NAMCO_DSWA_1  : natural := 72;
-constant C_MENU_NAMCO_DSWA_2  : natural := 73;
-constant C_MENU_NAMCO_DSWA_3  : natural := 74;
-constant C_MENU_NAMCO_DSWA_4  : natural := 75;
-constant C_MENU_NAMCO_DSWA_5  : natural := 76;
-constant C_MENU_NAMCO_DSWA_6  : natural := 77;
-constant C_MENU_NAMCO_DSWA_7  : natural := 78;
+constant C_MENU_DECO_DSWB_0 : natural := 46;
+constant C_MENU_DECO_DSWB_1 : natural := 47;
+constant C_MENU_DECO_DSWB_2 : natural := 48;
+constant C_MENU_DECO_DSWB_3 : natural := 49;
+constant C_MENU_DECO_DSWB_4 : natural := 50;
+constant C_MENU_DECO_DSWB_5 : natural := 51;
+constant C_MENU_DECO_DSWB_6 : natural := 52;
+constant C_MENU_DECO_DSWB_7 : natural := 53;
 
 
 -- Burnin'Rubber specific video processing
@@ -246,9 +223,9 @@ signal dim_video    : std_logic;
 signal dsw_a_i      : std_logic_vector(7 downto 0);
 signal dsw_b_i      : std_logic_vector(7 downto 0);
 
-signal old_clk          : std_logic;
-signal ce_vid           : std_logic;
-signal ce_pix           : std_logic;
+signal old_clk      : std_logic;
+signal ce_vid       : std_logic;
+signal ce_pix       : std_logic;
 
 signal video_ce     : std_logic;
 signal video_red    : std_logic_vector(7 downto 0);
@@ -282,7 +259,6 @@ signal qnice_dn_addr    : std_logic_vector(15 downto 0);
 signal qnice_dn_data    : std_logic_vector(7 downto 0);
 signal qnice_dn_wr      : std_logic;
 
--- 320x288 @ 50 Hz
 constant C_320_288_50 : video_modes_t := (
    CLK_KHZ     => 6000,       -- 6 MHz
    CEA_CTA_VIC => 0,
@@ -341,23 +317,23 @@ begin
    video_clk_o  <= video_clk;
    video_rst_o  <= video_rst;
    
-   dsw_a_i <= main_osm_control_i(C_MENU_MIDWAY_DSWA_7) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_6) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_5) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_4) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_3) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_2) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_1) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWA_0);
+   dsw_a_i <= main_osm_control_i(C_MENU_DECO_DSWA_7) &
+              main_osm_control_i(C_MENU_DECO_DSWA_6) &
+              main_osm_control_i(C_MENU_DECO_DSWA_5) &
+              main_osm_control_i(C_MENU_DECO_DSWA_4) &
+              main_osm_control_i(C_MENU_DECO_DSWA_3) &
+              main_osm_control_i(C_MENU_DECO_DSWA_2) &
+              main_osm_control_i(C_MENU_DECO_DSWA_1) &
+              main_osm_control_i(C_MENU_DECO_DSWA_0);
    
-  dsw_b_i <=  main_osm_control_i(C_MENU_MIDWAY_DSWB_7) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_6) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_5) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_4) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_3) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_2) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_1) &
-              main_osm_control_i(C_MENU_MIDWAY_DSWB_0);
+  dsw_b_i <=  main_osm_control_i(C_MENU_DECO_DSWB_7) &
+              main_osm_control_i(C_MENU_DECO_DSWB_6) &
+              main_osm_control_i(C_MENU_DECO_DSWB_5) &
+              main_osm_control_i(C_MENU_DECO_DSWB_4) &
+              main_osm_control_i(C_MENU_DECO_DSWB_3) &
+              main_osm_control_i(C_MENU_DECO_DSWB_2) &
+              main_osm_control_i(C_MENU_DECO_DSWB_1) &
+              main_osm_control_i(C_MENU_DECO_DSWB_0);
    
             
    ---------------------------------------------------------------------------------------------
@@ -478,44 +454,6 @@ begin
            video_ce_o       <= ce_pix;
        end if;
     end process;
-
-    -- The video output from the core has the following (empirically determined)
-    -- parameters:
-    -- CLK_KHZ     => 6000,       -- 6 MHz
-    -- H_PIXELS    => 288,        -- horizontal display width in pixels
-    -- V_PIXELS    => 224,        -- vertical display width in rows
-    -- H_PULSE     => 29,         -- horizontal sync pulse width in pixels
-    -- H_BP        => 44,         -- horizontal back porch width in pixels
-    -- H_FP        => 23,         -- horizontal front porch width in pixels
-    -- V_PULSE     => 8,          -- vertical sync pulse width in rows
-    -- V_BP        => 12,         -- vertical back porch width in rows
-    -- V_FP        => 20,         -- vertical front porch width in rows
-    -- This corresponds to a horizontal sync frequency of 15.625 kHz
-    -- and a vertical sync frequency of 59.19 Hz.
-    --
-    -- After screen rotation the visible part therefore has a size of 224x288 pixels.
-    -- In order to display this image we need a screen resolution that is large enough.
-    -- I've chosen a down-scaled version of the standard 576p. The important values here
-    -- are the horizontal sync frequency of 15.625 kHz and the fact that I'm keeping
-    -- the pixel clock rate of 6 MHz.
-    -- The calculation is as follows: The standard 576p has the following parameters:
-    -- (see M2M/vhdl/av_pipeline/video_modes_pkg.vhd):
-    -- * pixel clock rate of 27 MHz.
-    -- * horizontal sync frequency of 31.25 kHz.
-    -- * horizontal scan line time of 1000/31.25 = 32 us.
-    -- * horizontal visible pixels 720.
-    -- * horizontal visible time 720/27 = 26.67 us.
-    -- In a non-scandoubled domain the numbers change as follows:
-    -- * horizontal sync frequency of 31.25/2 = 15.625 kHz.
-    -- * horizontal scan line time of 32*2 = 64 us.
-    -- * horizontal visible time 26.67*2 = 53.33 us.
-    -- Since we are sticking with a 6 MHz pixel rate, we get:
-    -- * horizontal visible pixels 53.33*6 = 320.
-    -- Therefore, we have a visible screen area of 320x288 pixels, and our rotated image
-    -- of 224x288 must be centered in here. This leaves a border of (320-224)/2 = 48
-    -- pixels on either side.
-    -- Nevertheless, on my VGA monitor, this video signal is recognized as
-    -- 720x288 @ 50Hz.
 
     i_screen_rotate : entity work.screen_rotate
        port map (

@@ -57,7 +57,7 @@ constant QNICE_CLK_SPEED      : natural := 50_000_000;   -- a change here has de
 -- Rendering constants (in pixels)
 --    VGA_*   size of the core's target output post scandoubler
 --    FONT_*  size of one OSM character
-constant VGA_DX               : natural := 512;
+constant VGA_DX               : natural := 506;
 constant VGA_DY               : natural := 480;
 constant FONT_FILE            : string  := "../font/Anikki-16x16-m2m.rom";
 constant FONT_DX              : natural := 16;
